@@ -6,14 +6,17 @@ import asyncio
 
 router = APIRouter()
 
-@router.post("/generate_flashcards", summary="Extract Arabic text from an image and generate flashcards", response_model=FlashcardResponse)
+@router.post("/generate_flashcards", summary="Generate detailed flashcards from Arabic words", response_model=FlashcardResponse)
 async def generate_flashcards_from_image(file: UploadFile = File(...)):
     try:
         # Step 1: Extract text from the uploaded image
         words = await extract_text_from_image(file)
 
-        # Step 2: Generate flashcards using OpenAI
-        flashcards = await generate_flashcards(words)
+        # Step 2: Generate flashcards using OpenAI for each word
+        flashcards = {}
+        for word in words:
+            flashcard = await generate_flashcards(word)
+            flashcards[word] = flashcard
 
         # Return both extracted words and generated flashcards
         return {
