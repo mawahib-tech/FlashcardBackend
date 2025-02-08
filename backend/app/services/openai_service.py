@@ -13,19 +13,21 @@ if not openai.api_key:
 
 
 async def generate_flashcards(words):
-    """Generate flashcard-style explanations for a list of words using OpenAI."""
+    """Generate flashcard-style explanations using OpenAI's chat-based API."""
     flashcards = {}
-    
+
     for word in words:
         try:
-            # Customize the prompt as needed
-            response = openai.Completion.create(
-                engine="text-davinci-003",  # Choose the appropriate model
-                prompt=f"Provide a short definition or explanation for the Arabic word: {word}",
-                max_tokens=50,
-                temperature=0.7
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",  # Use the chat-based model
+                messages=[
+                    {"role": "system", "content": "You are an assistant that provides short definitions or explanations for Arabic words."},
+                    {"role": "user", "content": f"Provide a short definition or explanation for the Arabic word: {word}"}
+                ],
+                temperature=0.7,
+                max_tokens=50
             )
-            explanation = response.choices[0].text.strip()
+            explanation = response['choices'][0]['message']['content'].strip()
             flashcards[word] = explanation
         except Exception as e:
             flashcards[word] = f"Error: {e}"

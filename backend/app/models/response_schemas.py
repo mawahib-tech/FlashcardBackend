@@ -1,5 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Dict
 
-class ExtractTextResponse(BaseModel):
+class FlashcardResponse(BaseModel):
     extracted_words: List[str]
+    flashcards: Dict[str, str]
